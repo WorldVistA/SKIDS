@@ -1,0 +1,8 @@
+This project aims at developing support for Source KIDS
+to make the KIDS files compatible with standard revision
+control systems such as Git, Bazaar and SVN.
+
+This code is distributed under the Apache 2.0 License.
+
+See LICENSE files for details.
+
