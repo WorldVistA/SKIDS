@@ -1,8 +1,8 @@
-This project aims at developing support for Source KIDS
-to make the KIDS files compatible with standard revision
-control systems such as Git, Bazaar and SVN.
+OSEHRA - Open Source Electronic Health Record Agent
 
-This code is distributed under the Apache 2.0 License.
+This source tree contains experimental prototype code to represent VistA
+data structures, such as FileMan files, outside of a MUMPS environment.
+It is part of the OSEHRA "Source KIDS" (SKIDS) investigation to help
+represent all VistA software in a format suitable for version control.
 
-See LICENSE files for details.
-
+Please visit http://osehra.org for more information.
