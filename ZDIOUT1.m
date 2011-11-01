@@ -112,7 +112,7 @@ FIELDSUB ; Write a multiple-valued field
  Q
 FIELDONE ; Write a single-valued field
  N P S P=$P(F4,";",2)
- N V S V=$P(@EGRF,"^",P) Q:V=""
+ N V S V=$$FIELDVAL(EGRF,P) Q:V=""
  N EV ; Some TYPEs have an external-format value
  N T S T=TYPE
  I T["F" S TYPE=TYPE_";"_"Free Text"
@@ -127,6 +127,10 @@ FIELDONE ; Write a single-valued field
  U IO W D_$C(9),$$VALUE(V),!
  U IO W D_$C(9),";",!
  Q
+FIELDVAL(EGRF,P) ; Extract piece P of node value holding field
+ I +P Q $P(@EGRF,"^",P)
+ I $E(P,1)="E" Q $E(@EGRF,$P($E(P,2,$L(P)),",",1),$P(P,",",2))
+ Q ";UNKNOWN ""GLOBAL SUBSCRIPT LOCATION"" PIECE """_P_""""
  ;
 FILENAME(FILE) ; Lookup the name of given FILE# (or subfile#)
  Q $O(^DD(FILE,0,"NM","")) ; TODO: Reliable?  Any documented API?
