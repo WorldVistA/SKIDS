@@ -22,7 +22,7 @@ ZDIOUT1 ; Experimental FileMan file output to host file
 SAVEFILE(FILE,DIR) ; Save FILE to given host directory
  I '$$SLASH(DIR) Q
  N FGR S FGR=$$FGR(FILE) Q:'$$CHECK(FGR,"Not a valid file number: "_FILE)
- S IO=DIR_$P($E(FGR,2,$L(FGR)),"(")_"+"_$$FILENAME(FILE)_".txt"
+ S IO=DIR_$P($E(FGR,2,$L(FGR)),"(")_"+"_$$FILENAME(FILE,FGR)_".txt"
  W IO,!
  C IO O IO:("WNS"):1 E  U $P W "Cannot open """_IO_""" for write!",! Q
  D FILE("",FILE,FGR)
@@ -38,6 +38,13 @@ PRNENTRY(FILE,I,IO) ; Print FILE record #I, optionally to IO device
  N FGR S FGR=$$FGR(FILE) Q:'$$CHECK(FGR,"Not a valid file number: "_FILE)
  D ENTITY("",FILE,$$EGR(FGR,I))
  Q
+PRNDD(FILE,IO) ; Print DD for FILE, optionally to IO device
+ S:'$D(IO) IO=$P
+ ; DD(FILE) is a file#0 whose entries define fields of FILE
+ N FGR S FGR=$NA(^DD(FILE))
+ I '$D(@FGR) W "Not a valid file number: "_FILE,! Q
+ D FILE("",0,FGR)
+ Q
  ;---------------------------------------------------------------------------
  ; Private implementation entry points below.
  ; References cite the VA FileMan 22.0 Programmer Manual.
@@ -46,7 +53,7 @@ ASKFILE ; Ask for file number
  R !,"File#: ",FILE G:FILE="" ASKFILE Q:FILE["^"  S FILE=+FILE
  S FGR=$$FGR(FILE)
  I '$$CHECK(FGR," (Not a valid file number)") G ASKFILE
- W "  ",$$FILENAME(FILE)
+ W "  ",$$FILENAME(FILE,FGR)
  Q
 ASKDIR ; Ask for host dir
  R !,!,"Host output directory: ",DIR,! Q:DIR["^"   G:'$$SLASH(DIR) ASKDIR
@@ -73,7 +80,7 @@ WP(D,FGR) ; Write a word-processing value
  U IO W D,";",!
  Q
 ENTITY(D,FILE,EGR) ; Write a file entry
- U IO W D,"ENTITY"_$C(9)_";;"_$$FILENAME(FILE)_"^"_FILE_" ;"_EGR,!
+ U IO W D,"ENTITY"_$C(9)_";;"_$$FILENAME(FILE,FGR)_"^"_$S(FILE=0:"",1:FILE)_" ;"_EGR,!
  U IO W D_$C(9)_";",!
  ; Add key tag with field .01 value (14.9.2).
  ; TODO: Use indexing cross-references or KEY file entries for key tags?
@@ -132,7 +139,8 @@ FIELDVAL(EGRF,P) ; Extract piece P of node value holding field
  I $E(P,1)="E" Q $E(@EGRF,$P($E(P,2,$L(P)),",",1),$P(P,",",2))
  Q ";UNKNOWN ""GLOBAL SUBSCRIPT LOCATION"" PIECE """_P_""""
  ;
-FILENAME(FILE) ; Lookup the name of given FILE# (or subfile#)
+FILENAME(FILE,FGR) ; Lookup the name of given FILE# (or subfile#)
+ I FILE=0 Q $P(@FGR@(0),"^") ; DD
  Q $O(^DD(FILE,0,"NM","")) ; TODO: Reliable?  Any documented API?
 VALUE(V) ; Write value line to output
  ; TODO: If value starts in one of " $ ; or contains non-printing
