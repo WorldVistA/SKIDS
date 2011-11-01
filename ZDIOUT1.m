@@ -114,12 +114,14 @@ FIELDONE ; Write a single-valued field
  N P S P=$P(F4,";",2)
  N V S V=$P(@EGRF,"^",P) Q:V=""
  N EV ; Some TYPEs have an external-format value
- I TYPE["F" S TYPE=TYPE_";"_"Free Text"
- I TYPE["N" S TYPE=TYPE_";"_"Numeric"
- I TYPE["P" S TYPE=TYPE_";"_"Pointer",EV=1
- I TYPE["V" S TYPE=TYPE_";"_"Variable Pointer",EV=1
- I TYPE["S" S TYPE=TYPE_";"_"Set of Codes",EV=1
- I TYPE["D" S TYPE=TYPE_";"_"Date",EV=1
+ N T S T=TYPE
+ I T["F" S TYPE=TYPE_";"_"Free Text"
+ I T["N" S TYPE=TYPE_";"_"Numeric"
+ I T["K" S TYPE=TYPE_";"_"MUMPS Code"
+ I T["P" S TYPE=TYPE_";"_"Pointer",EV=1
+ I T["V" S TYPE=TYPE_";"_"Variable Pointer",EV=1
+ I T["S" S TYPE=TYPE_";"_"Set of Codes",EV=1
+ I T["D" S TYPE=TYPE_";"_"Date",EV=1
  I $D(EV) S V=V_"^"_$$EXTERNAL^DILFD(FILE,F,"",V)
  D FIELDTAG
  U IO W D_$C(9),$$VALUE(V),!
