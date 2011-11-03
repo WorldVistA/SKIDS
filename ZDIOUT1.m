@@ -79,12 +79,17 @@ DDCR(FILE,DD) ; X-ref global subscript location to DD field
 FILE(D,FILE,FGR) ; Write all entries in a file
  ; TODO: Sort entries by .01 or KEY to ensure consistent order
  N DD D DDCR(FILE,.DD)
- N I S I=0 F  S I=$O(@FGR@(I)) Q:'+I  D ENTITY(D,FILE,.DD,$$EGR(FGR,I))
+ N I S I="" F  S I=$O(@FGR@(I)) Q:I=""  D
+ . I +I D
+ . . D ENTITY(D,FILE,.DD,$$EGR(FGR,I))
+ . E  D ; TODO: Handle known non-entry subscripts such as "B"
+ . . D SUBS(D,$$EGR(FGR,I),I)
  Q
 WP(D,FGR) ; Write a word-processing value
  ; A word processing field is actually a file in which each entry has a
  ; .01 field containing the line of text, and the type of the field has "W".
- N I S I=0 F  S I=$O(@FGR@(I)) Q:'+I  D
+ U IO W D,";",$$VALUE(@FGR@(0)),! ; TODO: Preserve date from ^(0)
+ N I S I="" F  S I=$O(@FGR@(I)) Q:I=""  D:+I ; TODO: Other subscripts?
  . U IO W D,$$VALUE(@FGR@(I,0)),!
  U IO W D,";",!
  Q
@@ -97,10 +102,18 @@ ENTITY(D,FILE,DD,EGR) ; Write a file entry
  U IO W D,"KA"_$C(9)_";;",$P(@EGR@(0),"^"),!
  U IO W D_$C(9)_";",!
  N S S S="" F  S S=$O(@EGR@(S)) Q:S=""  D ; Find DD fields at S.
+ . I $D(DD(S))<10 D ; TODO: Field defs like "DEL" not in ^DD(0)
+ . . D SUBS(D,$NA(@EGR@(S)),S)
  . N F S F="" F  S F=$O(DD(S,F)) Q:F=""  D
  . . D FIELD(D,FILE,F,$NA(@EGR@(S)),DD(S,F))
  Q
  ;
+SUBS(D,G,S) ; Write an extraneous subscript
+ U IO W D,"SUBS"_$C(9)_";;"_S,!
+ I $D(@G)#10 U IO W D_$C(9),$$VALUE(@G),!
+ I $D(@G)\10 U IO W D_$C(9),"; OMITTED CHILDREN",!
+ U IO W D_$C(9),";",!
+ Q
 FIELD(D,FILE,F,EGRF,P) ; Write a field
  ; The DD field definition 0-node has ^-pieces "NAME^TYPE^" (14.9.2).
  N FD S FD=^DD(FILE,F,0)
@@ -118,6 +131,7 @@ FIELDTAG ; Write tag for a field
  Q
 FIELDSUB ; Write a multiple-valued field
  D FIELDTAG
+ I $D(@EGRF)#10 U IO W D_$C(9),"; OMITTED SELF",!
  ; Word-processing values are files whose .01 field type has "W".
  I $P($G(^DD(SUBFILE,.01,0)),"^",2)["W" D
  . D WP(D_$C(9),EGRF)
@@ -138,6 +152,7 @@ FIELDONE ; Write a single-valued field
  I $D(EV) S V=V_"^"_$$EXTERNAL^DILFD(FILE,F,"",V)
  D FIELDTAG
  U IO W D_$C(9),$$VALUE(V),!
+ I $D(@EGRF)\10 U IO W D_$C(9),"; OMITTED CHILDREN",!
  U IO W D_$C(9),";",!
  Q
 FIELDVAL(EGRF,P) ; Extract piece P of node value holding field
