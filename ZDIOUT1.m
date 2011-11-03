@@ -36,7 +36,8 @@ PRNFILE(FILE,IO) ; Print FILE, optionally to IO device
 PRNENTRY(FILE,I,IO) ; Print FILE record #I, optionally to IO device
  S:'$D(IO) IO=$P
  N FGR S FGR=$$FGR(FILE) Q:'$$CHECK(FGR,"Not a valid file number: "_FILE)
- D ENTITY("",FILE,$$EGR(FGR,I))
+ N DD D DDCR(FILE,.DD)
+ D ENTITY("",FILE,.DD,$$EGR(FGR,I))
  Q
 PRNDD(FILE,IO) ; Print DD for FILE, optionally to IO device
  S:'$D(IO) IO=$P
@@ -68,9 +69,17 @@ EGR(FGR,I) ; Get ENTRY Global Root
 CHECK(V,MSG) ; Validate non-empty value
  I V="" W MSG,! Q 0
  Q 1
+DDCR(FILE,DD) ; X-ref global subscript location to DD field
+ ; The DD field definition 0-node has ^-pieces "^^^S;P^" where
+ ; "S;P" is the node Subscript and Piece within the node value (14.9.2).
+ N F S F="" F  S F=$O(^DD(FILE,F)) Q:F=""  D:+F
+ . N F4,S,P S F4=$P(^DD(FILE,F,0),"^",4),S=$P(F4,";",1),P=$P(F4,";",2) Q:S=" "
+ . S DD(S,F)=P ; Subscript S contains field F at piece P
+ Q
 FILE(D,FILE,FGR) ; Write all entries in a file
  ; TODO: Sort entries by .01 or KEY to ensure consistent order
- N I S I=0 F  S I=$O(@FGR@(I)) Q:'+I  D ENTITY(D,FILE,$$EGR(FGR,I))
+ N DD D DDCR(FILE,.DD)
+ N I S I=0 F  S I=$O(@FGR@(I)) Q:'+I  D ENTITY(D,FILE,.DD,$$EGR(FGR,I))
  Q
 WP(D,FGR) ; Write a word-processing value
  ; A word processing field is actually a file in which each entry has a
@@ -79,7 +88,7 @@ WP(D,FGR) ; Write a word-processing value
  . U IO W D,$$VALUE(@FGR@(I,0)),!
  U IO W D,";",!
  Q
-ENTITY(D,FILE,EGR) ; Write a file entry
+ENTITY(D,FILE,DD,EGR) ; Write a file entry
  U IO W D,"ENTITY"_$C(9)_";;"_$$FILENAME(FILE,FGR)_"^"_$S(FILE=0:"",1:FILE)_" ;"_EGR,!
  U IO W D_$C(9)_";",!
  ; Add key tag with field .01 value (14.9.2).
@@ -87,18 +96,16 @@ ENTITY(D,FILE,EGR) ; Write a file entry
  ; TODO: Escape key values, handle pointers?
  U IO W D,"KA"_$C(9)_";;",$P(@EGR@(0),"^"),!
  U IO W D_$C(9)_";",!
- ; Look for each field defined by the Data Dictionary.
- N F S F="" F  S F=$O(^DD(FILE,F)) Q:F=""  I +F D
- . D FIELD(D,FILE,EGR,F)
+ N S S S="" F  S S=$O(@EGR@(S)) Q:S=""  D ; Find DD fields at S.
+ . N F S F="" F  S F=$O(DD(S,F)) Q:F=""  D
+ . . D FIELD(D,FILE,F,$NA(@EGR@(S)),DD(S,F))
  Q
-FIELD(D,FILE,EGR,F) ; Write a field
- ; The DD field definition 0-node has ^-pieces "NAME^TYPE^^S;P^" where
- ; "S;P" is the node Subscript and Piece within the node value (14.9.2).
+ ;
+FIELD(D,FILE,F,EGRF,P) ; Write a field
+ ; The DD field definition 0-node has ^-pieces "NAME^TYPE^" (14.9.2).
  N FD S FD=^DD(FILE,F,0)
  N NAME S NAME=$P(FD,"^",1)
  N TYPE S TYPE=$P(FD,"^",2)
- N F4,S S F4=$P(FD,"^",4),S=$P(F4,";",1)
- N EGRF S EGRF=$NA(@EGR@(S)) Q:'$D(@EGRF)
  ; TYPE starts with a subfile number if the field is a multiple (14.9.2)
  N SUBFILE S SUBFILE=+TYPE
  I SUBFILE D
@@ -118,7 +125,6 @@ FIELDSUB ; Write a multiple-valued field
  . D FILE(D_$C(9),SUBFILE,EGRF) U IO W D_$C(9),";",!
  Q
 FIELDONE ; Write a single-valued field
- N P S P=$P(F4,";",2)
  N V S V=$$FIELDVAL(EGRF,P) Q:V=""
  N EV ; Some TYPEs have an external-format value
  N T S T=TYPE
