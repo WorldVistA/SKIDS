@@ -71,8 +71,43 @@ def unpack(kid, routineDir):
                         routine.write(code)
                     line=f.next()
 
-def main():
-    unpack(sys.argv[1], sys.argv[2])
+def checksum(routine):
+    checksum = 0
+    lineNumber = 1
+    characterPosition = 1
+    savedcharater=""
+    with open(routine, 'r') as f:
+        for line in f:
+            #sys.stdout.write(str(lineNumber) + "  " + line)
+            lineNumber += 1
+            # ignore the second line
+            if lineNumber == 2:
+                continue
+            for character in line:
+                #sys.stdout.write("line position " +str(lineNumber) +"\n")
+                #sys.stdout.write("character position " + str(characterPosition) + "\n")
+                if characterPosition == 1:
+                    sys.stdout.write("1st character " +character + "\n")
+                    if character == ' ':
+                        sys.stdout.write("indented line")
+                        continue
+                characterPosition +=1
+                if character == ';':
+                    continue
+                    if savedcharater == ';':
+                        # character and next character = ;;
+                        # this needs to be counted
+                        checksum += ord(character)*lineNumber*characterPosition
+                    # this doesn't need to be counted or the rest of the line (comment)
+                    continue
+                # normal code
+                checksum += ord(character)*lineNumber*characterPosition
+            characterPosition=0
+    sys.stdout.write("Checksum is: "+str(checksum)+"\n")
 
+def main():
+    #unpack(sys.argv[1], sys.argv[2])
+    checksum(sys.argv[1])
+         
 if __name__ == '__main__':
     main()
