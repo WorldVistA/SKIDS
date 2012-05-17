@@ -73,37 +73,38 @@ def unpack(kid, routineDir):
 
 def checksum(routine):
     checksum = 0
-    lineNumber = 1
-    characterPosition = 1
+    lineNumber = 0
+    characterPosition = 0
     savedcharater=""
     with open(routine, 'r') as f:
         for line in f:
-            #sys.stdout.write(str(lineNumber) + "  " + line)
             lineNumber += 1
             # ignore the second line
             if lineNumber == 2:
                 continue
-            for character in line:
-                #sys.stdout.write("line position " +str(lineNumber) +"\n")
-                #sys.stdout.write("character position " + str(characterPosition) + "\n")
-                if characterPosition == 1:
-                    sys.stdout.write("1st character " +character + "\n")
-                    if character == ' ':
-                        sys.stdout.write("indented line")
-                        continue
+            lengthOfLine = mFind(line," ")
+            if mExtract(line,lengthOfLine) != ";":
+                lengthOfLine = line.__len__()-1
+            elif mExtract(line, 1+lengthOfLine) == ";":
+                lengthOfLine = line.__len__()-1
+            else:
+                lengthOfLine = lengthOfLine - 1
+            for character in xrange(lengthOfLine):
                 characterPosition +=1
-                if character == ';':
-                    continue
-                    if savedcharater == ';':
-                        # character and next character = ;;
-                        # this needs to be counted
-                        checksum += ord(character)*lineNumber*characterPosition
-                    # this doesn't need to be counted or the rest of the line (comment)
-                    continue
                 # normal code
-                checksum += ord(character)*lineNumber*characterPosition
-            characterPosition=0
+                temp = lineNumber+characterPosition
+                checksum += ord(mExtract(line,character))*temp
+            characterPosition = 0
+            
     sys.stdout.write("Checksum is: "+str(checksum)+"\n")
+
+def mExtract(string,position):
+    chars = list(string)
+    return chars[--position]
+
+def mFind(string,substring):
+    f = string.index(substring)
+    return f +1
 
 def main():
     #unpack(sys.argv[1], sys.argv[2])
