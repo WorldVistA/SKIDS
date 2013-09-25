@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://va.gov/VistA/kids/manifest" xmlns:tns="http://va.gov/VistA/kids/manifest" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="build" type="tns:kidsManifest"/>
+
+  <xs:element name="components" type="tns:manifestComponents"/>
+
+  <xs:complexType name="requiredBuild">
+    <xs:sequence/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="action" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="manifestComponents">
+    <xs:sequence>
+      <xs:element name="dataDictionaries" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="dataDictionary" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="routines" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="routine" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="rpcs" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="rpc" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="options" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="option" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="securityKeys" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="securityKey" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="protocols" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="protocol" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="templateLists" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="templateList" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="hl7Applications" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="hl7Application" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="hl7LogicalLinks" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="hl7LogicalLink" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="parameterDefinitions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="parameterDefinition" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="parameterTemplates" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="parameterTemplate" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="printTemplates" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="printTemplate" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="sortTemplates" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="sortTemplate" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="inputTemplates" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="inputTemplate" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="forms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="form" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="functions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="function" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="dialogs" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="dialog" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="bulletins" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="bulletin" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="mailGroups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="mailGroup" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="helpFrames" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="helpFrame" type="tns:manifestComponent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="manifestComponent">
+    <xs:sequence/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="export" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="kidsManifest">
+    <xs:sequence>
+      <xs:element name="requiredBuilds" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="requiredBuild" type="tns:requiredBuild" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element ref="tns:components" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="patch" type="xs:short" use="required"/>
+    <xs:attribute name="patchName" type="xs:string"/>
+    <xs:attribute name="packageNumber" type="xs:short"/>
+    <xs:attribute name="packageName" type="xs:string"/>
+    <xs:attribute name="packagePrefix" type="xs:string"/>
+    <xs:attribute name="packageShortDescription" type="xs:string"/>
+    <xs:attribute name="packageVersion" type="xs:string"/>
+    <xs:attribute name="packageDateDistributed" type="xs:string"/>
+    <xs:attribute name="packageDateInstalled" type="xs:string"/>
+    <xs:attribute name="packageInstalledBy" type="xs:string"/>                   
+    <xs:attribute name="alphaBetaTesting" type="xs:string"/>
+     <xs:attribute name="installationMessage" type="xs:string"/>
+    <xs:attribute name="addressForUsageReporting" type="xs:string"/>
+    <xs:attribute name="envCheckRoutine" type="xs:string"/>
+    <xs:attribute name="deleteEnvCheckRoutine" type="xs:string"/>
+    <xs:attribute name="preInstallRoutine" type="xs:string"/>
+    <xs:attribute name="deletePreInstalltRoutine" type="xs:string"/>
+    <xs:attribute name="postInstallRoutine" type="xs:string"/>
+    <xs:attribute name="deletePostInstallRoutine" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>
+
